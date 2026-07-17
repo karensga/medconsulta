@@ -17,12 +17,12 @@ export default async function DoctorsPage() {
       <Suspense><ToastTrigger /></Suspense>
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Doctores</h1>
+        <h1 className="text-2xl font-bold">Especialistas</h1>
         <Link
           href="/doctors/new"
           className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          + Nuevo doctor
+          + Nuevo especialista
         </Link>
       </div>
 
@@ -32,14 +32,14 @@ export default async function DoctorsPage() {
             <Stethoscope className="w-6 h-6 text-gray-400" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-700">Sin doctores registrados</p>
-            <p className="text-xs text-gray-400 mt-0.5">Agrega el primer doctor para empezar a agendar citas</p>
+            <p className="text-sm font-medium text-gray-700">Sin especialistas registrados</p>
+            <p className="text-xs text-gray-400 mt-0.5">Agrega el primer especialista para empezar a agendar citas</p>
           </div>
           <Link
             href="/doctors/new"
             className="mt-1 px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Agregar doctor
+            Agregar especialista
           </Link>
         </div>
       ) : (

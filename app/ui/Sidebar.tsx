@@ -18,7 +18,7 @@ import {
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/appointments", label: "Citas", icon: CalendarDays },
-  { href: "/doctors", label: "Doctores", icon: Stethoscope },
+  { href: "/doctors", label: "Especialistas", icon: Stethoscope },
   { href: "/patients", label: "Pacientes", icon: Users },
 ];
 

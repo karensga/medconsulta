@@ -15,7 +15,7 @@ export default async function BookingHomePage() {
         </div>
 
         {doctors.length === 0 ? (
-          <p className="text-center text-gray-500">No hay doctores disponibles en este momento.</p>
+          <p className="text-center text-gray-500">No hay especialistas disponibles en este momento.</p>
         ) : (
           <div className="space-y-3">
             {doctors.map((doctor) => (

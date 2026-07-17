@@ -36,7 +36,7 @@ export default async function ConfirmadoPage({
         {appt && (
           <div className="bg-gray-50 rounded-xl p-4 text-left text-sm space-y-2 mb-6">
             <Row label="Paciente" value={appt.patient.name} />
-            <Row label="Doctor" value={`Dr. ${appt.doctor.name}`} />
+            <Row label="Especialista" value={`Dr. ${appt.doctor.name}`} />
             <Row label="Especialidad" value={appt.doctor.specialty} />
             <Row
               label="Fecha"

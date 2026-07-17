@@ -200,13 +200,13 @@ export default function NewAppointmentForm({
 
           {/* Doctor */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Doctor *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Especialista *</label>
             <Select name="doctorId" value={doctorId} onValueChange={(id) => id && handleDoctorChange(id)}>
               <SelectTrigger className="w-full h-9 text-sm">
                 <SelectValue>
                   {doctorId
                     ? (() => { const d = doctors.find((d) => d.id === doctorId); return d ? `Dr. ${d.name} — ${d.specialty}` : ""; })()
-                    : "Seleccionar doctor..."}
+                    : "Seleccionar especialista..."}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent>

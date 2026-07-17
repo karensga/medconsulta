@@ -7,9 +7,9 @@ export default function NewDoctorPage() {
     <div className="max-w-xl mx-auto">
       <div className="mb-6">
         <Link href="/doctors" className="text-sm text-blue-600 hover:underline">
-          ← Volver a doctores
+          ← Volver a especialistas
         </Link>
-        <h1 className="text-2xl font-bold mt-2">Nuevo doctor</h1>
+        <h1 className="text-2xl font-bold mt-2">Nuevo especialista</h1>
       </div>
 
       <form action={createDoctor} className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
@@ -78,7 +78,7 @@ export default function NewDoctorPage() {
             type="submit"
             className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
           >
-            Guardar doctor
+            Guardar especialista
           </button>
           <Link
             href="/doctors"

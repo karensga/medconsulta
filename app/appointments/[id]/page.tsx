@@ -50,7 +50,7 @@ export default async function AppointmentDetailPage({
             <Row label="Paciente" value={appt.patient.name} />
             <Row label="Teléfono" value={appt.patient.phone} />
             <Row
-              label="Doctor"
+              label="Especialista"
               value={`Dr. ${appt.doctor.name} — ${appt.doctor.specialty}`}
             />
             <Row

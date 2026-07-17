@@ -20,7 +20,7 @@ export default function DoctorFilter({
       }}
       className="text-sm border border-gray-300 rounded px-2 py-1 bg-white"
     >
-      <option value="">Todos los doctores</option>
+      <option value="">Todos los especialistas</option>
       {doctors.map((d) => (
         <option key={d.id} value={d.id}>
           Dr. {d.name}

@@ -77,11 +77,11 @@ export default function AppointmentFilters({
               <SelectValue>
                 {currentDoctorId && currentDoctorId !== ALL
                   ? `Dr. ${doctors.find((d) => d.id === currentDoctorId)?.name ?? ""}`
-                  : "Todos los doctores"}
+                  : "Todos los especialistas"}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={ALL}>Todos los doctores</SelectItem>
+              <SelectItem value={ALL}>Todos los especialistas</SelectItem>
               {doctors.map((d) => (
                 <SelectItem key={d.id} value={d.id}>
                   Dr. {d.name}
