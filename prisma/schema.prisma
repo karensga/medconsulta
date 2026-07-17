@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Doctor {
+  id            String        @id @default(cuid())
+  name          String
+  specialty     String
+  workStart     String
+  workEnd       String
+  slotDuration  Int           @default(30) // minutos
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  appointments  Appointment[]
+}
+
+model Patient {
+  id           String        @id @default(cuid())
+  documentId   String?       @unique // RUT, DNI, cédula, etc.
+  name         String
+  phone        String
+  email        String?
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]
+}
+
+// status values: SCHEDULED | COMPLETED | CANCELLED | RESCHEDULED
+model Appointment {
+  id             String   @id @default(cuid())
+  doctorId       String
+  patientId      String
+  startTime      DateTime
+  endTime        DateTime
+  reason         String
+  status         String   @default("SCHEDULED")
+  notes          String?
+  googleEventId  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  doctor  Doctor  @relation(fields: [doctorId], references: [id])
+  patient Patient @relation(fields: [patientId], references: [id])
+}

@@ -1,0 +1,117 @@
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
+import StatusBadge from "@/app/ui/StatusBadge";
+import AppointmentFilters from "@/app/appointments/AppointmentFilters";
+import ToastTrigger from "@/app/ui/ToastTrigger";
+import { Suspense } from "react";
+import { CalendarX } from "lucide-react";
+
+export default async function AppointmentsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ status?: string; doctorId?: string; search?: string; from?: string; to?: string }>;
+}) {
+  const { status, doctorId, search, from, to } = await searchParams;
+
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      ...(status ? { status } : {}),
+      ...(doctorId ? { doctorId } : {}),
+      ...(search ? { patient: { name: { contains: search } } } : {}),
+      ...(from || to
+        ? {
+            startTime: {
+              ...(from ? { gte: new Date(from) } : {}),
+              ...(to ? { lte: new Date(to + "T23:59:59") } : {}),
+            },
+          }
+        : {}),
+    },
+    include: { doctor: true, patient: true },
+    orderBy: { startTime: "desc" },
+  });
+
+  const doctors = await prisma.doctor.findMany({ orderBy: { name: "asc" } });
+
+  return (
+    <div className="space-y-5">
+      <Suspense><ToastTrigger /></Suspense>
+
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Citas</h1>
+        <Link
+          href="/appointments/new"
+          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          + Nueva cita
+        </Link>
+      </div>
+
+      <Suspense>
+        <AppointmentFilters
+          doctors={doctors}
+          currentStatus={status}
+          currentDoctorId={doctorId}
+          currentSearch={search}
+          currentFrom={from}
+          currentTo={to}
+        />
+      </Suspense>
+
+      {appointments.length === 0 ? (
+        <div className="bg-white rounded-lg border border-gray-200 py-16 flex flex-col items-center gap-3 text-center">
+          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+            <CalendarX className="w-6 h-6 text-gray-400" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700">No se encontraron citas</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              {search || from || to ? "Prueba ajustando los filtros" : "Aún no hay citas registradas"}
+            </p>
+          </div>
+          {!search && !from && !to && (
+            <Link
+              href="/appointments/new"
+              className="mt-1 px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Agendar primera cita
+            </Link>
+          )}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg border border-gray-200 divide-y divide-gray-100">
+          {appointments.map((appt) => (
+            <div key={appt.id} className="px-4 py-3 flex items-start gap-3 hover:bg-gray-50/70 transition-colors">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                  <p className="font-medium text-sm text-gray-700">
+                    {appt.startTime.toLocaleDateString("es-ES", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <p className="font-mono text-xs text-gray-500">
+                    {appt.startTime.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                    {" — "}
+                    {appt.endTime.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}
+                  </p>
+                </div>
+                <p className="font-medium text-sm truncate">{appt.patient.name}</p>
+                <p className="text-xs text-gray-500 truncate">
+                  {appt.reason} · Dr. {appt.doctor.name} ({appt.doctor.specialty})
+                </p>
+              </div>
+              <div className="flex flex-col items-end gap-1.5 shrink-0">
+                <StatusBadge status={appt.status} />
+                <Link href={`/appointments/${appt.id}`} className="text-xs text-blue-600 hover:underline">
+                  Ver detalles
+                </Link>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
