@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { getPatientByDocument } from "@/lib/api/patients";
+import { ApiError } from "@/lib/api/client";
 import { NextRequest } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -8,10 +9,12 @@ export const GET = async (req: NextRequest) => {
     return Response.json({ patient: null });
   }
 
-  const patient = await prisma.patient.findFirst({
-    where: { documentId: document },
-    select: { id: true, name: true, phone: true, email: true, documentId: true },
-  });
-
-  return Response.json({ patient });
+  try {
+    const patient = await getPatientByDocument(document);
+    return Response.json({ patient });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Error inesperado";
+    const status = e instanceof ApiError ? e.status : 500;
+    return Response.json({ patient: null, error: message }, { status });
+  }
 };

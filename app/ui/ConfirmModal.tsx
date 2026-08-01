@@ -1,5 +1,6 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import { AlertTriangle } from "lucide-react";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
   onCancel: () => void;
   loading?: boolean;
   confirmLabel?: string;
+  loadingLabel?: string;
 }
 
 export default function ConfirmModal({
@@ -18,13 +20,14 @@ export default function ConfirmModal({
   onCancel,
   loading = false,
   confirmLabel = "Eliminar",
+  loadingLabel = "Eliminando...",
 }: Props) {
   if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+  return createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-200">
       <div className="fixed inset-0 bg-black/40" onClick={onCancel} />
-      <div className="relative bg-white rounded-xl border border-gray-200 shadow-lg p-6 w-full max-w-sm space-y-4">
+      <div className="relative bg-white rounded-xl border border-gray-200 shadow-lg p-6 w-full max-w-sm space-y-4 animate-in fade-in zoom-in-95 duration-200">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-full bg-red-100 flex items-center justify-center shrink-0">
             <AlertTriangle className="w-4 h-4 text-red-600" />
@@ -45,12 +48,13 @@ export default function ConfirmModal({
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors disabled:opacity-50 font-medium"
+            className="px-4 py-2 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition active:scale-[0.97] disabled:opacity-50 font-medium"
           >
-            {loading ? "Eliminando..." : confirmLabel}
+            {loading ? loadingLabel : confirmLabel}
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -11,11 +11,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+// El back solo acepta estos tres estados. "Reagendada" no existe como estado:
+// reprogramar es una acción aparte (cambia la hora, mantiene "Programada").
 const statuses = [
   { value: "SCHEDULED", label: "Programada" },
   { value: "COMPLETED", label: "Completada" },
   { value: "CANCELLED", label: "Cancelada" },
-  { value: "RESCHEDULED", label: "Reagendada" },
 ];
 
 export default function StatusSelector({

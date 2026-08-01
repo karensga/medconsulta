@@ -1,17 +1,13 @@
-"use client";
+import AnimatedPage from "@/app/ui/AnimatedPage";
 
-import { usePathname } from "next/navigation";
-
+// Este wrapper solo se usa dentro de app/(app)/layout.tsx (el panel admin
+// bajo /panel), que es lo único que renderiza <Sidebar>. /booking y /portal
+// viven fuera de ese grupo de rutas y nunca pasan por acá.
 export default function ContentWrapper({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const hasSidebar = !pathname.startsWith("/booking") && pathname !== "/login";
-
   return (
-    <div className={hasSidebar ? "md:pl-60" : ""}>
-      {hasSidebar && <div className="h-14 md:hidden" />}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {children}
-      </main>
+    <div className="md:pl-60">
+      <div className="h-14 md:hidden" />
+      <AnimatedPage>{children}</AnimatedPage>
     </div>
   );
 }

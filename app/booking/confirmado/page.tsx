@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { getAppointment } from "@/lib/api/appointments";
 import Link from "next/link";
 import BookingProgress from "@/app/booking/BookingProgress";
 import { CheckCircle } from "lucide-react";
@@ -10,20 +10,15 @@ export default async function ConfirmadoPage({
 }) {
   const { id } = await searchParams;
 
-  const appt = id
-    ? await prisma.appointment.findUnique({
-        where: { id },
-        include: { doctor: true, patient: true },
-      })
-    : null;
+  const appt = id ? await getAppointment(id) : null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-md">
         <BookingProgress current={2} />
       </div>
-      <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 p-8 shadow-sm text-center">
-        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-gray-200 p-8 shadow-sm text-center animate-in fade-in zoom-in-95 duration-300">
+        <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6 animate-in zoom-in-95 duration-200 delay-150">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -36,8 +31,8 @@ export default async function ConfirmadoPage({
         {appt && (
           <div className="bg-gray-50 rounded-xl p-4 text-left text-sm space-y-2 mb-6">
             <Row label="Paciente" value={appt.patient.name} />
-            <Row label="Especialista" value={`Dr. ${appt.doctor.name}`} />
-            <Row label="Especialidad" value={appt.doctor.specialty} />
+            <Row label="Especialista" value={`Dr. ${appt.especialista.name}`} />
+            <Row label="Especialidad" value={appt.especialista.specialty} />
             <Row
               label="Fecha"
               value={appt.startTime.toLocaleDateString("es-ES", {

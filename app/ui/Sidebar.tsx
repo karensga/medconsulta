@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { logout } from "@/app/actions/auth";
 import { useState } from "react";
 import {
   LayoutDashboard,
   CalendarDays,
   Stethoscope,
   Users,
+  Settings,
   ExternalLink,
   LogOut,
   Menu,
@@ -16,10 +16,11 @@ import {
 } from "lucide-react";
 
 const links = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/appointments", label: "Citas", icon: CalendarDays },
-  { href: "/doctors", label: "Especialistas", icon: Stethoscope },
-  { href: "/patients", label: "Pacientes", icon: Users },
+  { href: "/panel", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/panel/appointments", label: "Citas", icon: CalendarDays },
+  { href: "/panel/especialistas", label: "Especialistas", icon: Stethoscope },
+  { href: "/panel/patients", label: "Pacientes", icon: Users },
+  { href: "/panel/ajustes/integraciones", label: "Integraciones", icon: Settings },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
@@ -27,7 +28,7 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <>
       {links.map(({ href, label, icon: Icon }) => {
-        const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+        const active = href === "/panel" ? pathname === "/panel" : pathname.startsWith(href);
         return (
           <Link
             key={href}
@@ -48,14 +49,16 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export default function Sidebar() {
-  const pathname = usePathname();
+export default function Sidebar({ userLabel }: { userLabel?: string | null }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  if (pathname.startsWith("/booking") || pathname === "/login") return null;
 
   const bottomLinks = (
     <div className="space-y-0.5">
+      {userLabel && (
+        <p className="px-3 pb-1 text-xs text-gray-400 truncate" title={userLabel}>
+          {userLabel}
+        </p>
+      )}
       <Link
         href="/booking"
         target="_blank"
@@ -64,15 +67,13 @@ export default function Sidebar() {
         <ExternalLink className="w-4 h-4 shrink-0 text-gray-400" />
         Vista paciente
       </Link>
-      <form action={logout}>
-        <button
-          type="submit"
-          className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
-        >
-          <LogOut className="w-4 h-4 shrink-0 text-gray-400" />
-          Salir
-        </button>
-      </form>
+      <a
+        href="/auth/logout"
+        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors"
+      >
+        <LogOut className="w-4 h-4 shrink-0 text-gray-400" />
+        Salir
+      </a>
     </div>
   );
 
@@ -111,12 +112,12 @@ export default function Sidebar() {
       </header>
 
       {/* Mobile backdrop */}
-      {mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/30 z-40 md:hidden"
-          onClick={() => setMobileOpen(false)}
-        />
-      )}
+      <div
+        className={`fixed inset-0 bg-black/30 z-40 md:hidden transition-opacity duration-200 ${
+          mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setMobileOpen(false)}
+      />
 
       {/* Mobile drawer */}
       <aside

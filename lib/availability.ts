@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { apiFetch } from "@/lib/api/client";
 
 export type TimeSlot = {
   start: Date;
@@ -6,57 +6,70 @@ export type TimeSlot = {
   available: boolean;
 };
 
-const parseTime = (timeStr: string, date: Date): Date => {
-  const [hours, minutes] = timeStr.split(":").map(Number);
-  const d = new Date(date);
-  d.setHours(hours, minutes, 0, 0);
-  return d;
+// La API real calcula la disponibilidad del lado del servidor
+// (GET /citas/disponibilidad?especialistaId&fecha&duracionMin), así que ya no
+// recalculamos la grilla de horarios localmente contra Prisma.
+//
+// La colección Bruno no trae un ejemplo de la respuesta de este endpoint, así
+// que este normalizador acepta varias formas plausibles:
+//   - un array de strings ISO (horas de inicio disponibles)
+//   - un array de objetos { inicio, fin?, disponible? }
+//   - { slots: [...] } o { disponibilidad: [...] } envolviendo cualquiera de los anteriores
+// Si la forma real difiere, este es el único lugar que hay que ajustar.
+const normalizeSlots = (raw: unknown, durationMin: number): TimeSlot[] => {
+  const list: unknown[] = Array.isArray(raw)
+    ? raw
+    : Array.isArray((raw as { slots?: unknown[] })?.slots)
+      ? (raw as { slots: unknown[] }).slots
+      : Array.isArray((raw as { disponibilidad?: unknown[] })?.disponibilidad)
+        ? (raw as { disponibilidad: unknown[] }).disponibilidad
+        : [];
+
+  return list.map((item) => {
+    if (typeof item === "string") {
+      const start = new Date(item);
+      return { start, end: new Date(start.getTime() + durationMin * 60_000), available: true };
+    }
+
+    const obj = item as Record<string, unknown>;
+    const startRaw = (obj.inicio ?? obj.start ?? obj.hora) as string;
+    const start = new Date(startRaw);
+    const endRaw = (obj.fin ?? obj.end) as string | undefined;
+    const end = endRaw ? new Date(endRaw) : new Date(start.getTime() + durationMin * 60_000);
+    const available =
+      typeof obj.disponible === "boolean"
+        ? obj.disponible
+        : typeof obj.available === "boolean"
+          ? obj.available
+          : true;
+
+    return { start, end, available };
+  });
 };
 
 export const getAvailableSlots = async (
-  doctorId: string,
+  especialistaId: string,
   date: Date,
   durationMinutes: number,
   excludeAppointmentId?: string
 ): Promise<TimeSlot[]> => {
-  const doctor = await prisma.doctor.findUnique({ where: { id: doctorId } });
-  if (!doctor) return [];
-
-  const dayStart = parseTime(doctor.workStart, date);
-  const dayEnd = parseTime(doctor.workEnd, date);
-
-  const startOfDay = new Date(date);
-  startOfDay.setHours(0, 0, 0, 0);
-  const endOfDay = new Date(date);
-  endOfDay.setHours(23, 59, 59, 999);
-
-  const existingAppointments = await prisma.appointment.findMany({
-    where: {
-      doctorId,
-      startTime: { gte: startOfDay, lte: endOfDay },
-      status: { in: ["SCHEDULED", "RESCHEDULED"] },
-      ...(excludeAppointmentId ? { id: { not: excludeAppointmentId } } : {}),
+  const fecha = date.toISOString().slice(0, 10);
+  const raw = await apiFetch<unknown>("/citas/disponibilidad", {
+    searchParams: {
+      especialistaId,
+      fecha,
+      duracionMin: durationMinutes,
     },
   });
 
-  const slots: TimeSlot[] = [];
-  const slotInterval = 15; // grid every 15 min
-  let cursor = new Date(dayStart);
+  const slots = normalizeSlots(raw, durationMinutes);
 
-  while (true) {
-    const slotEnd = new Date(cursor.getTime() + durationMinutes * 60_000);
-    if (slotEnd > dayEnd) break;
-
-    const conflict = existingAppointments.some(
-      (appt) => cursor < appt.endTime && slotEnd > appt.startTime
-    );
-
-    // Skip slots in the past
-    const isPast = cursor <= new Date();
-
-    slots.push({ start: new Date(cursor), end: slotEnd, available: !conflict && !isPast });
-    cursor = new Date(cursor.getTime() + slotInterval * 60_000);
-  }
+  // La API no documenta un parámetro para excluir una cita propia al reagendar.
+  // No podemos identificar aquí cuál slot corresponde a la cita excluida sin
+  // conocerla de antemano, así que este caso se resuelve en la acción que llama
+  // a esta función (ver app/actions/appointments.ts), reinsertando el horario
+  // actual de la cita si no aparece en la lista.
+  void excludeAppointmentId;
 
   return slots;
 };
