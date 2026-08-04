@@ -1,4 +1,4 @@
-// Cliente HTTP para la API real (MediAgenda / NunkiCitas), desplegada en Heroku.
+// Cliente HTTP para la API real (Nunki / NunkiCitas), desplegada en Heroku.
 // Maneja la autenticación Auth0 client-credentials (M2M) igual que el script
 // "before-request" de la colección Bruno en /Downloads/api: pide un access token,
 // lo cachea en memoria del proceso y lo renueva cuando faltan <60s para que expire.

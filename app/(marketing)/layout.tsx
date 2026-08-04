@@ -10,7 +10,7 @@ export default function MarketingLayout({
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="font-semibold text-blue-600 text-lg tracking-tight">
-            MediAgenda
+            Nunki
           </Link>
           <nav className="hidden sm:flex items-center gap-6 text-sm text-gray-600">
             <a href="#caracteristicas" className="hover:text-gray-900 transition-colors">
@@ -36,7 +36,7 @@ export default function MarketingLayout({
 
       <footer className="border-t border-gray-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} MediAgenda. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Nunki. Todos los derechos reservados.</p>
           <div className="flex items-center gap-5">
             <a href="#contacto" className="hover:text-gray-700 transition-colors">
               Contacto

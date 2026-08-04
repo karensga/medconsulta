@@ -13,7 +13,7 @@ import {
 import { ScrollReveal } from "@/app/ui/ScrollReveal";
 
 export const metadata: Metadata = {
-  title: "MediAgenda — Agenda online para consultorios de psicología",
+  title: "Nunki — Agenda online para consultorios de psicología",
   description:
     "Deja que tus pacientes reserven su cita en línea, con recordatorios y videollamada por Google Meet automática. Gestiona especialistas, pacientes y citas en un solo lugar.",
 };
@@ -39,7 +39,7 @@ export default function LandingPage() {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[450ms] fill-mode-both ease-[var(--ease-out)]">
             <a
-              href={`mailto:${CONTACT_EMAIL}?subject=Quiero%20probar%20MediAgenda`}
+              href={`mailto:${CONTACT_EMAIL}?subject=Quiero%20probar%20Nunki`}
               className="inline-flex items-center justify-center gap-2 px-5 py-3 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-[background-color,transform] duration-150 active:scale-[0.97]"
             >
               Solicitar acceso
@@ -155,7 +155,7 @@ export default function LandingPage() {
             Escríbenos y te ayudamos a configurar tu agenda con tus especialistas y horarios.
           </p>
           <a
-            href={`mailto:${CONTACT_EMAIL}?subject=Quiero%20probar%20MediAgenda`}
+            href={`mailto:${CONTACT_EMAIL}?subject=Quiero%20probar%20Nunki`}
             className="mt-7 inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-50 transition-[background-color,transform] duration-150 active:scale-[0.97]"
           >
             <Mail className="w-4 h-4" />

@@ -82,7 +82,7 @@ export default function Sidebar({ userLabel }: { userLabel?: string | null }) {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 w-60 flex-col bg-white border-r border-gray-200 z-30">
         <div className="px-5 h-16 flex items-center border-b border-gray-100 shrink-0">
-          <span className="font-semibold text-blue-600 text-lg tracking-tight">MediAgenda</span>
+          <span className="font-semibold text-blue-600 text-lg tracking-tight">Nunki</span>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           <NavLinks />
@@ -101,7 +101,7 @@ export default function Sidebar({ userLabel }: { userLabel?: string | null }) {
         >
           <Menu className="w-5 h-5" />
         </button>
-        <span className="font-semibold text-blue-600 text-base tracking-tight">MediAgenda</span>
+        <span className="font-semibold text-blue-600 text-base tracking-tight">Nunki</span>
         <Link
           href="/booking"
           target="_blank"
@@ -126,7 +126,7 @@ export default function Sidebar({ userLabel }: { userLabel?: string | null }) {
         }`}
       >
         <div className="flex items-center justify-between px-4 h-14 border-b border-gray-100 shrink-0">
-          <span className="font-semibold text-blue-600 text-base tracking-tight">MediAgenda</span>
+          <span className="font-semibold text-blue-600 text-base tracking-tight">Nunki</span>
           <button
             onClick={() => setMobileOpen(false)}
             className="p-1 rounded text-gray-400 hover:text-gray-600"

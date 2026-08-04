@@ -6,7 +6,7 @@ import { Toaster } from "sonner";
 const geist = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MediAgenda — Agenda para especialistas",
+  title: "Nunki — Agenda para especialistas",
   description:
     "Agenda de citas, pacientes y videollamadas con Google Meet para consultorios de psicología.",
 };
